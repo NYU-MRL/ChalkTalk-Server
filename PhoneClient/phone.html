@@ -33,13 +33,26 @@
 		var canvas = document.getElementsByTagName("canvas")[0];
 		var ctx = canvas.getContext('2d');
 		ctx.globalAlpha = 0.01;
-		canvas.addEventListener("touchStart", handleStart, false);
 
-		function handleStart(){
+		canvas.addEventListener("touchStart", handleStart, false);
+		canvas.addEventListener("touchMove", handleMove, false);
+		canvas.onMouseDown = handleStart;
+		// canvas.addEventListener("touchStart", handleStart, false);
+
+		function handleStart(evt){
 			var messageList = document.getElementById("debugMessages");
 			var el = document.createElement("li");
-			el.innerText = "helloooooo";
+			el.innerText = "handleStart";
 			messageList.appendChild(el);
+			evt.preventDefault();
+		}
+
+		function handleMove(evt){
+			var messageList = document.getElementById("debugMessages");
+			var el = document.createElement("li");
+			el.innerText = "handleMove";
+			messageList.appendChild(el);
+			evt.preventDefault();
 		}
 
 	</script>
