@@ -30,31 +30,36 @@
 		</ul>
 	</div>
 	<script type="text/javascript">
+	var CanvasEvents = function(options){
 		var canvas = document.getElementsByTagName("canvas")[0];
 		var ctx = canvas.getContext('2d');
 		ctx.globalAlpha = 0.01;
+		var self = {
+			init: function(canvas){			
+				canvas.addEventListener("touchStart", self.handleStart, false);
+				canvas.addEventListener("touchMove", self.handleMove, false);
+				// canvas.onMouseDown = handleStart;
+			},
+			handleStart: function(evt){
+				var messageList = document.getElementById("debugMessages");
+				var el = document.createElement("li");
+				el.innerText = "handleStart";
+				messageList.appendChild(el);
+				evt.preventDefault();
+			},
+			handleMove: function(evt){
+				var messageList = document.getElementById("debugMessages");
+				var el = document.createElement("li");
+				el.innerText = "handleMove";
+				messageList.appendChild(el);
+				evt.preventDefault();
+			}
+		};
+		self.init(canvas);
+	};
 
-		canvas.addEventListener("touchStart", handleStart, false);
-		canvas.addEventListener("touchMove", handleMove, false);
-		canvas.onMouseDown = handleStart;
-		// canvas.addEventListener("touchStart", handleStart, false);
+(function (){ var events = new CanvasEvents(); })();
 
-		function handleStart(evt){
-			var messageList = document.getElementById("debugMessages");
-			var el = document.createElement("li");
-			el.innerText = "handleStart";
-			messageList.appendChild(el);
-			evt.preventDefault();
-		}
-
-		function handleMove(evt){
-			var messageList = document.getElementById("debugMessages");
-			var el = document.createElement("li");
-			el.innerText = "handleMove";
-			messageList.appendChild(el);
-			evt.preventDefault();
-		}
-
-	</script>
+</script>
 </body>
 </html>
