@@ -36,8 +36,8 @@
 		ctx.globalAlpha = 0.01;
 		var self = {
 			init: function(canvas){			
-				canvas.addEventListener("touchStart", self.handleStart, false);
-				canvas.addEventListener("touchMove", self.handleMove, false);
+				canvas.addEventListener("touchstart", self.handleStart, false);
+				canvas.addEventListener("touchmove", self.handleMove, false);
 				// canvas.onMouseDown = handleStart;
 			},
 			handleStart: function(evt){
