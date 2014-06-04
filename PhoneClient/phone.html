@@ -30,6 +30,7 @@
 		</ul>
 	</div>
 	<script type="text/javascript">
+
 	var CanvasEvents = function(options){
 		var canvas = document.getElementsByTagName("canvas")[0];
 		var ctx = canvas.getContext('2d');
@@ -47,6 +48,11 @@
 				// canvas.addEventListener("touchcancel", self.handleCancel, false);
 			  	canvas.addEventListener("touchleave", self.handleEnd, false);
 			  	canvas.addEventListener("touchend", self.handleEnd, false);
+
+			  	////////////////////////////////////////////
+
+			  	window.addEventListener("devicemotion", self.handleMotion, false);
+
 			},
 			handleStart: function(evt){
 				log("handleStart");
@@ -59,6 +65,9 @@
 			handleEnd : function(evt){
 				log("handleEnd");
 				evt.preventDefault();
+			},
+			handleMotion : function(evt){
+				log(JSON.stringify( evt.acceleration ));
 			}
 		};
 		self.init(canvas);
