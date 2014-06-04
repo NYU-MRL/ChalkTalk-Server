@@ -51,7 +51,7 @@
 
 			  	////////////////////////////////////////////
 
-			  	window.addEventListener("devicemotion", self.handleMotion, false);
+			  	// window.addEventListener("devicemotion", self.handleMotion, false);
 
 			},
 			handleStart: function(evt){
@@ -66,9 +66,9 @@
 				log("handleEnd");
 				evt.preventDefault();
 			},
-			handleMotion : function(evt){
-				log(JSON.stringify( evt.acceleration ));
-			}
+			// handleMotion : function(evt){
+			// 	log(JSON.stringify( evt.acceleration ));
+			// }
 		};
 		self.init(canvas);
 	};
