@@ -34,24 +34,29 @@
 		var canvas = document.getElementsByTagName("canvas")[0];
 		var ctx = canvas.getContext('2d');
 		ctx.globalAlpha = 0.01;
+		function log(message){
+			var el = document.createElement("li");
+				el.innerText = message;
+				messageList.appendChild(el);
+		}
 		var self = {
 			init: function(canvas){			
 				canvas.addEventListener("touchstart", self.handleStart, false);
 				canvas.addEventListener("touchmove", self.handleMove, false);
-				// canvas.onMouseDown = handleStart;
+				// canvas.addEventListener("touchcancel", self.handleCancel, false);
+			  	canvas.addEventListener("touchleave", self.handleEnd, false);
+			  	canvas.addEventListener("touchend", self.handleEnd, false);
 			},
 			handleStart: function(evt){
-				var messageList = document.getElementById("debugMessages");
-				var el = document.createElement("li");
-				el.innerText = "handleStart";
-				messageList.appendChild(el);
+				log("handleStart");
 				evt.preventDefault();
 			},
 			handleMove: function(evt){
-				var messageList = document.getElementById("debugMessages");
-				var el = document.createElement("li");
-				el.innerText = "handleMove";
-				messageList.appendChild(el);
+				log("handleMove");
+				evt.preventDefault();
+			}
+			handleEnd : function(evt){
+				log("handleEnd");
 				evt.preventDefault();
 			}
 		};
