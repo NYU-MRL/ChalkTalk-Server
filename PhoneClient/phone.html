@@ -35,6 +35,7 @@
 		var ctx = canvas.getContext('2d');
 		ctx.globalAlpha = 0.01;
 		function log(message){
+			var messageList = document.getElementById("debugMessages");
 			var el = document.createElement("li");
 				el.innerText = message;
 				messageList.appendChild(el);
