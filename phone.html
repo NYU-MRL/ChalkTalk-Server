@@ -74,7 +74,11 @@
 						}
 					}
 				  return -1; 
-				},
+				},	
+			
+			copyTouch: function (touch) { //Safari reuses old events. 
+			  return { identifier: touch.identifier, pageX: touch.pageX, pageY: touch.pageY };
+			},
 
 			init: function(canvas){
 				canvas.addEventListener("touchstart", self.handleStart, false);
