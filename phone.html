@@ -127,9 +127,10 @@
 					//Message Structure: /tuio/2Dcur set s x y ax ay 
 					var x = touches[i].pageX / viewport_w;
 					var y = touches[i].pageY / viewport_h;
-					var dx = x - oldTouch.pageX / viewport_w;
-					var dy = y - oldTouch.pageY / viewport_h;
-					var dt = now - oldTouch.time;
+					//FIXME: THIS IS WRONG. FIND OUT WHY
+					var dx = x - oldTouch[0].pageX / viewport_w;
+					var dy = y - oldTouch[0].pageY / viewport_h;
+					var dt = now - oldTouch[0].time;
 					var ax = dx / dt;
 					var ay = dy / dt;
 					socket.emit("tuio 1.0", "/tuio/2Dcur set " + [self.id,x,y,ax,ay].join(' '));	
