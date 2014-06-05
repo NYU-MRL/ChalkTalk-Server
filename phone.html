@@ -97,7 +97,7 @@
 				socket.emit("tuio 1.0", "handleStart");
 				var touches = evt.changedTouches;
 				for (var i = 0 ; i < touches.length ; i++){
-					ongoingTouches.push(copyTouch(touches[i]));
+					self.ongoingTouches.push(copyTouch(touches[i]));
 				}
 				evt.preventDefault();
 			},
@@ -118,7 +118,7 @@
 			handleEnd : function(evt){
 				// log("handleEnd");
 				var index = ongoingTouchIndexById(touches[i].identifier);
-				ongoingTouches.splice(index, 1); 
+				self.ongoingTouches.splice(index, 1); 
 				// socket.emit("tuio 1.0", "handleEnd	");
 				evt.preventDefault();
 			},
