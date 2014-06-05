@@ -57,28 +57,6 @@
 		
 
 		var self = {
-			id : (function(x){
-					if (typeof x === undefined) {
-							return "0";
-						} else {
-							return x;
-						}})(options["id"]),
-
-			ongoingTouches: new Array(),
-
-			ongoingTouchIndexById: function(idToFind) {
-				for (var i=0; i < self.ongoingTouches.length; i++) {
-					var id = self.ongoingTouches[i].identifier;
-					if (id == idToFind) {
-						return i;
-						}
-					}
-				  return -1; 
-				},	
-			
-			copyTouch: function (touch) { //Safari reuses old events. 
-			  return { identifier: touch.identifier, pageX: touch.pageX, pageY: touch.pageY, time : 0, speed : 0, rotation : 0};
-			},
 
 			init: function(canvas){
 				canvas.addEventListener("touchstart", self.handleStart, false);
@@ -96,6 +74,48 @@
 			  	socket.on("message", function(msg){log(msg);});
 
 			},
+
+			id : (function(x){
+					if (typeof x === undefined) {
+							return "0";
+						} else {
+							return x;
+						}})(options["id"]),
+
+			ongoingTouches: new Array(),
+
+			getViewport: function(){
+				return {
+					w : Math.max(document.documentElement.clientWidth, window.innerWidth || 0),
+					h : Math.max(document.documentElement.clientHeight, window.innerHeight || 0)
+				}
+			},
+
+			ongoingTouchIndexById: function(idToFind) {
+				for (var i=0; i < self.ongoingTouches.length; i++) {
+					var id = self.ongoingTouches[i].identifier;
+					if (id == idToFind) {
+						return i;
+						}
+					}
+				  return -1; 
+				},	
+			
+			copyTouch: function (touch) { //Safari reuses old events. 
+				var verify = function(val, defaultVal){
+					return typeof val !== 'undefined' ? val : defaultVal;
+				}
+			  return { 
+			  	identifier: touch.identifier, 
+			  	pageX: touch.pageX, 
+			  	pageY: touch.pageY, 
+			  	time : verify(touch.time, 0), 
+			  	speed :  verify(touch.speed,0), 
+			  	rotation : verify(touch.rotation,0),
+			  	updated : verify(touch.updated,false)
+			  	 };
+			},
+
 			handleStart: function(evt){
 				// log("handleStart");
 				var touches = evt.changedTouches;
@@ -115,8 +135,7 @@
 					"/tuio/2Dobj alive " + (_.map(self.ongoingTouches, 
 											function(t){return t.identifier;}).join(' ')));
 
-				var viewport_w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
-				var viewport_h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+				var viewport = self.getViewport();
 				var now = (new Date()).getTime();
 
 				for (var i = 0 ; i < touches.length ; i++){
@@ -125,12 +144,12 @@
 					touchCopy.time = now;
 					var oldTouch = self.ongoingTouches.splice(index, 1, touchCopy)[0]; 
 					//Message Structure: /tuio/2Dobj set s i x y a ax ay aa m r
-					var x = touches[i].pageX / viewport_w;
-					var y = touches[i].pageY / viewport_h;
+					var x = touches[i].pageX / viewport.w;
+					var y = touches[i].pageY / viewport.h;
 					//FIXME: THIS IS WRONG. FIND OUT WHY
 					var dt = now - oldTouch.time;
-					var dx = x - oldTouch.pageX / viewport_w;
-					var dy = y - oldTouch.pageY / viewport_h;
+					var dx = x - oldTouch.pageX / viewport.w;
+					var dy = y - oldTouch.pageY / viewport.h;
 					var vx = dx / dt;
 					var vy = dy / dt;
 					var a = 0 ; //angle
@@ -147,9 +166,16 @@
 			handleEnd : function(evt){
 				// log("handleEnd");
 				var touches = evt.changedTouches;
+				var viewport = self.getViewport();
 				for (var i = 0 ; i < touches.length ; i++){
-				var index = self.ongoingTouchIndexById(touches[i].identifier);
-				self.ongoingTouches.splice(index, 1); 
+					var index = self.ongoingTouchIndexById(touches[i].identifier);
+					var removed = self.ongoingTouches.splice(index, 1)[0];
+					if (!removed.updated){
+						socket.emit('tap', {
+							x : removed.pageX/viewport.x, 
+							y : removed.pageY/viewport.y
+						} );
+					}
 				}
 				evt.preventDefault();
 			},
