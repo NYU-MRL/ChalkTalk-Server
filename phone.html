@@ -101,7 +101,7 @@
 				socket.emit("tuio 1.0", "handleStart");
 				var touches = evt.changedTouches;
 				for (var i = 0 ; i < touches.length ; i++){
-					self.ongoingTouches.push(copyTouch(touches[i]));
+					self.ongoingTouches.push(self.copyTouch(touches[i]));
 				}
 				evt.preventDefault();
 			},
@@ -109,11 +109,11 @@
 				// log("handleMove");
 				var touches = evt.changedTouches;
 				for (var i = 0 ; i < touches.length ; i++){
-					var index = ongoingTouchIndexById(touches[i].identifier);
+					var index = self.ongoingTouchIndexById(touches[i].identifier);
 					// ongoingTouches
 				}
 				socket.emit("tuio 1.0", 
-					"/tuio/2Dcur alive " + (_.map(ongoingTouches, 
+					"/tuio/2Dcur alive " + (_.map(self.ongoingTouches, 
 											function(t){return t.identifier;}).join(' ')));
 
 				// socket.emit("tuio 1.0", "handleMove");
@@ -121,7 +121,7 @@
 			},
 			handleEnd : function(evt){
 				// log("handleEnd");
-				var index = ongoingTouchIndexById(touches[i].identifier);
+				var index = self.ongoingTouchIndexById(touches[i].identifier);
 				self.ongoingTouches.splice(index, 1); 
 				// socket.emit("tuio 1.0", "handleEnd	");
 				evt.preventDefault();
