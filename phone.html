@@ -29,7 +29,10 @@
 			<li>1</li>
 		</ul>
 	</div>
+	<script src="/socket.io/socket.io.js"></script>
 	<script type="text/javascript">
+
+	var socket = io();
 
 	var CanvasEvents = function(options){
 		var canvas = document.getElementsByTagName("canvas")[0];
@@ -41,29 +44,42 @@
 				el.innerText = message;
 				messageList.appendChild(el);
 		}
+
 		var self = {
-			init: function(canvas){			
+			id : (function(x){
+					if (typeof x === undefined) {
+							return "0";
+						} else {
+							return x;
+						}})(options["id"]),
+			init: function(canvas){
 				canvas.addEventListener("touchstart", self.handleStart, false);
 				canvas.addEventListener("touchmove", self.handleMove, false);
 				// canvas.addEventListener("touchcancel", self.handleCancel, false);
 			  	canvas.addEventListener("touchleave", self.handleEnd, false);
 			  	canvas.addEventListener("touchend", self.handleEnd, false);
 
-			  	////////////////////////////////////////////
+			  	/////////////////ACCELEROMETER/////////////////
 
 			  	// window.addEventListener("devicemotion", self.handleMotion, false);
 
+			  	//////////////////SOCKET//////////////////////
+			  	socket.on("message", function(msg){log(msg);});
+
 			},
 			handleStart: function(evt){
-				log("handleStart");
+				socket.emit("tuio 1.0", "handleStart");
+				// log("handleStart");
 				evt.preventDefault();
 			},
 			handleMove: function(evt){
-				log("handleMove");
+				// log("handleMove");
+				socket.emit("tuio 1.0", "handleMove");
 				evt.preventDefault();
 			},
 			handleEnd : function(evt){
-				log("handleEnd");
+				// log("handleEnd");
+				socket.emit("tuio 1.0", "handleEnd	");
 				evt.preventDefault();
 			},
 			// handleMotion : function(evt){
@@ -73,7 +89,8 @@
 		self.init(canvas);
 	};
 
-(function (){ var events = new CanvasEvents(); })();
+//TODO: Change the ID
+(function (){ var events = new CanvasEvents({id: "0"}); })(); 
 
 </script>
 </body>
