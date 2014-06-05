@@ -23,6 +23,12 @@ io.on('connection', function(client){
 		}
 	);
 
+	client.on("tap", 
+		function (msg){
+			console.log(JSON.stringify(msg));
+		}
+	);
+
 	client.on("disconnnect",
 		function (){
 			console.log("user disconnected");
