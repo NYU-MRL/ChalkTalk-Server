@@ -1,5 +1,7 @@
 <!DOCTYPE html>
 <html>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
 <head>
 	<title>Hi Phone</title>
 </head>
@@ -34,6 +36,10 @@
 
 	var socket = io();
 
+	socket.on("set id", 
+		function (msg){ var events = new CanvasEvents({'id' : msg});}
+		);
+
 	var CanvasEvents = function(options){
 		var canvas = document.getElementsByTagName("canvas")[0];
 		var ctx = canvas.getContext('2d');
@@ -64,12 +70,13 @@
 			  	// window.addEventListener("devicemotion", self.handleMotion, false);
 
 			  	//////////////////SOCKET//////////////////////
+			  	
 			  	socket.on("message", function(msg){log(msg);});
 
 			},
 			handleStart: function(evt){
-				socket.emit("tuio 1.0", "handleStart");
 				// log("handleStart");
+				socket.emit("tuio 1.0", "handleStart");
 				evt.preventDefault();
 			},
 			handleMove: function(evt){
@@ -88,9 +95,6 @@
 		};
 		self.init(canvas);
 	};
-
-//TODO: Change the ID
-(function (){ var events = new CanvasEvents({id: "0"}); })(); 
 
 </script>
 </body>

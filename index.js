@@ -2,13 +2,18 @@ var app = require("express")();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 
-app.get('/', function(req, res){
+app.get('/touch', function(req, res){
   res.sendfile('phone.html');
 });
 
+app.get('/'	)
+
 
 io.on('connection', function(socket){
-	console.log("user connected");
+	
+	console.log("user connected: " + socket.id);
+	socket.send("set id", socket.id);
+
 	socket.on("tuio 1.0", 
 		function (msg){
 			console.log(msg);
