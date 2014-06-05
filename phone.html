@@ -119,7 +119,7 @@
 				for (var i = 0 ; i < touches.length ; i++){
 					var index = self.ongoingTouchIndexById(touches[i].identifier);
 					var touchCopy = self.copyTouch(touches[i]);
-					touchCopy.time = now;
+					touchCopy['time'] = now;
 					var oldTouch = self.ongoingTouches.splice(index, 1, touchCopy); 
 					//Message Structure: /tuio/2Dcur set s x y ax ay 
 					var x = touches[i].clientX / viewport_w;
