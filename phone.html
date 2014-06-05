@@ -98,7 +98,6 @@
 			},
 			handleStart: function(evt){
 				// log("handleStart");
-				socket.emit("tuio 1.0", "handleStart");
 				var touches = evt.changedTouches;
 				for (var i = 0 ; i < touches.length ; i++){
 					self.ongoingTouches.push(self.copyTouch(touches[i]));
@@ -110,21 +109,20 @@
 				var touches = evt.changedTouches;
 				for (var i = 0 ; i < touches.length ; i++){
 					var index = self.ongoingTouchIndexById(touches[i].identifier);
-					// ongoingTouches
 				}
 				socket.emit("tuio 1.0", 
 					"/tuio/2Dcur alive " + (_.map(self.ongoingTouches, 
 											function(t){return t.identifier;}).join(' ')));
 
-				// socket.emit("tuio 1.0", "handleMove");
 				evt.preventDefault();
 			},
 			handleEnd : function(evt){
 				// log("handleEnd");
 				var touches = evt.changedTouches;
+				for (var i = 0 ; i < touches.length ; i++){
 				var index = self.ongoingTouchIndexById(touches[i].identifier);
 				self.ongoingTouches.splice(index, 1); 
-				// socket.emit("tuio 1.0", "handleEnd	");
+				}
 				evt.preventDefault();
 			},
 			// handleMotion : function(evt){
