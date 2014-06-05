@@ -107,12 +107,32 @@
 			handleMove: function(evt){
 				// log("handleMove");
 				var touches = evt.changedTouches;
-				for (var i = 0 ; i < touches.length ; i++){
-					var index = self.ongoingTouchIndexById(touches[i].identifier);
-				}
+				// See http://www.tuio.org/?tuio10
 				socket.emit("tuio 1.0", 
 					"/tuio/2Dcur alive " + (_.map(self.ongoingTouches, 
 											function(t){return t.identifier;}).join(' ')));
+
+				var viewport_w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+				var viewport_h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+				var now = (new Date()).getTime();
+
+				for (var i = 0 ; i < touches.length ; i++){
+					var index = self.ongoingTouchIndexById(touches[i].identifier);
+					var touchCopy = copyTouch(touches[i]);
+					touchCopy.time = now;
+					var oldTouch = ongoingTouches.splice(index, 1, touchCopy); 
+					//Message Structure: /tuio/2Dcur set s x y ax ay 
+					var x = touches[i].clientX / viewport_w;
+					var y = touches[i].clientY / viewport_h;
+					var dx = x - oldTouch.clientX / viewport_w;
+					var dy = y - oldTouch.clientY / viewport_h;
+					var dt = now - oldTouch.time;
+					var ax = dx / dt;
+					var ay = dy / dt;
+					socket.emit("tuio 1.0", "/tuio/2Dcur set " + [self.id,x,y,ax,ay].join(' '));	
+				}
+
+				
 
 				evt.preventDefault();
 			},
