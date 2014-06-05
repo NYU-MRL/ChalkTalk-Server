@@ -25,7 +25,7 @@ io.on('connection', function(client){
 
 	client.on("tap", 
 		function (msg){
-			console.log(JSON.stringify(msg));
+			console.log("tap : " + JSON.stringify(msg));
 		}
 	);
 

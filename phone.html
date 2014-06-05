@@ -110,9 +110,9 @@
 			  	pageX: touch.pageX, 
 			  	pageY: touch.pageY, 
 			  	time : verify(touch.time, 0), 
-			  	speed :  verify(touch.speed,0), 
-			  	rotation : verify(touch.rotation,0),
-			  	updated : verify(touch.updated,false)
+			  	speed :  verify(touch.speed, 0), 
+			  	rotation : verify(touch.rotation, 0),
+			  	updated : verify(touch.updated, false)
 			  	 };
 			},
 
@@ -142,6 +142,7 @@
 					var index = self.ongoingTouchIndexById(touches[i].identifier);
 					var touchCopy = self.copyTouch(touches[i]);
 					touchCopy.time = now;
+					touchCopy.updated = true;
 					var oldTouch = self.ongoingTouches.splice(index, 1, touchCopy)[0]; 
 					//Message Structure: /tuio/2Dobj set s i x y a ax ay aa m r
 					var x = touches[i].pageX / viewport.w;
