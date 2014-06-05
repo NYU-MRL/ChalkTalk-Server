@@ -4,6 +4,7 @@
   "description": "",
   "dependencies": {
     "socket.io": "~1.0.4",
-    "express": "~4.4.1"
+    "express": "~4.4.1",
+    "underscore": "~1.6.0"
   }
 }

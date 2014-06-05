@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<!-- <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" /> -->
+
 
 <head>
 	<title>Hi Phone</title>
@@ -44,12 +45,15 @@
 		var canvas = document.getElementsByTagName("canvas")[0];
 		var ctx = canvas.getContext('2d');
 		ctx.globalAlpha = 0.01;
+
 		function log(message){
 			var messageList = document.getElementById("debugMessages");
 			var el = document.createElement("li");
 				el.innerText = message;
 				messageList.appendChild(el);
 		}
+
+		
 
 		var self = {
 			id : (function(x){
@@ -58,6 +62,19 @@
 						} else {
 							return x;
 						}})(options["id"]),
+
+			ongoingTouches: new Array(),
+
+			ongoingTouchIndexById: function(idToFind) {
+				for (var i=0; i < self.ongoingTouches.length; i++) {
+					var id = self.ongoingTouches[i].identifier;
+					if (id == idToFind) {
+						return i;
+						}
+					}
+				  return -1; 
+				},
+
 			init: function(canvas){
 				canvas.addEventListener("touchstart", self.handleStart, false);
 				canvas.addEventListener("touchmove", self.handleMove, false);
@@ -77,14 +94,27 @@
 			handleStart: function(evt){
 				// log("handleStart");
 				socket.emit("tuio 1.0", "handleStart");
+				var touches = evt.changedTouches;
+				for (var i = 0 ; i < touches.length ; i++){
+					ongoingTouches.push(copyTouch(touches[i]));
+				}
 				evt.preventDefault();
 			},
 			handleMove: function(evt){
+				var touches = evt.changedTouches;
+				for (var i = 0 ; i < touches.length ; i++){
+					var index = ongoingTouchIndexById(touches[i].identifier);
+					ongoingTouches
+				}
+				// socket.emit("tuio 1.0", )
+
 				// log("handleMove");
 				socket.emit("tuio 1.0", "handleMove");
 				evt.preventDefault();
 			},
 			handleEnd : function(evt){
+				var index = ongoingTouchIndexById(touches[i].identifier);
+				ongoingTouches.splice(index, 1); 
 				// log("handleEnd");
 				socket.emit("tuio 1.0", "handleEnd	");
 				evt.preventDefault();

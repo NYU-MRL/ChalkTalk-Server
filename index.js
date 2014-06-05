@@ -6,20 +6,24 @@ app.get('/touch', function(req, res){
   res.sendfile('phone.html');
 });
 
-app.get('/'	)
+app.get('/', function(req,res){
+	res.send("<h1> not active </h1>");
+})
 
 
-io.on('connection', function(socket){
+io.on('connection', function(client){
 	
-	console.log("user connected: " + socket.id);
-	socket.send("set id", socket.id);
+	console.log("user connected: " + client.id);
+	client.send("set id", client.id);
 
-	socket.on("tuio 1.0", 
+
+	client.on("tuio 1.0", 
 		function (msg){
 			console.log(msg);
 		}
 	);
-	socket.on("disconnnect",
+
+	client.on("disconnnect",
 		function (){
 			console.log("user disconnected");
 		}
