@@ -77,7 +77,7 @@
 				},	
 			
 			copyTouch: function (touch) { //Safari reuses old events. 
-			  return { identifier: touch.identifier, pageX: touch.pageX, pageY: touch.pageY };
+			  return { identifier: touch.identifier, pageX: touch.pageX, pageY: touch.pageY, time : 0, speed : 0, rotation : 0};
 			},
 
 			init: function(canvas){
@@ -112,7 +112,7 @@
 				var touches = evt.changedTouches;
 				// See http://www.tuio.org/?tuio10
 				socket.emit("tuio 1.0", 
-					"/tuio/2Dcur alive " + (_.map(self.ongoingTouches, 
+					"/tuio/2Dobj alive " + (_.map(self.ongoingTouches, 
 											function(t){return t.identifier;}).join(' ')));
 
 				var viewport_w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
@@ -124,16 +124,20 @@
 					var touchCopy = self.copyTouch(touches[i]);
 					touchCopy.time = now;
 					var oldTouch = self.ongoingTouches.splice(index, 1, touchCopy); 
-					//Message Structure: /tuio/2Dcur set s x y ax ay 
+					//Message Structure: /tuio/2Dobj set s i x y a ax ay aa m r
 					var x = touches[i].pageX / viewport_w;
 					var y = touches[i].pageY / viewport_h;
 					//FIXME: THIS IS WRONG. FIND OUT WHY
+					var dt = now - oldTouch[0].time;
 					var dx = x - oldTouch[0].pageX / viewport_w;
 					var dy = y - oldTouch[0].pageY / viewport_h;
-					var dt = now - oldTouch[0].time;
-					var ax = dx / dt;
-					var ay = dy / dt;
-					socket.emit("tuio 1.0", "/tuio/2Dcur set " + [self.id,x,y,ax,ay].join(' '));	
+					var vx = dx / dt;
+					var vy = dy / dt;
+					var a = 0 ; //angle
+					touchCopy.speed = Math.sqrt(vx * vx + vy * vy);
+					var ma = (touchCopy.speed - oldTouch.speed)dt; //motion acceleration
+					var ra = 0; //rotational acceleration
+					socket.emit("tuio 1.0", "/tuio/2Dobj set " + [self.id, touches[i].identifier, x, y, a, vx ,vy, ma, ra].join(' '));	
 				}
 
 				
