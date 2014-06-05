@@ -14,7 +14,7 @@ app.get('/', function(req,res){
 io.on('connection', function(client){
 	
 	console.log("user connected: " + client.id);
-	client.send("set id", client.id);
+	client.emit("set id", client.id);
 
 
 	client.on("tuio 1.0", 
