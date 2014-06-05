@@ -125,10 +125,10 @@
 					touchCopy.time = now;
 					var oldTouch = self.ongoingTouches.splice(index, 1, touchCopy); 
 					//Message Structure: /tuio/2Dcur set s x y ax ay 
-					var x = touches[i].clientX / viewport_w;
-					var y = touches[i].clientY / viewport_h;
-					var dx = x - oldTouch.clientX / viewport_w;
-					var dy = y - oldTouch.clientY / viewport_h;
+					var x = touches[i].pageX / viewport_w;
+					var y = touches[i].pageY / viewport_h;
+					var dx = x - oldTouch.pageX / viewport_w;
+					var dy = y - oldTouch.pageY / viewport_h;
 					var dt = now - oldTouch.time;
 					var ax = dx / dt;
 					var ay = dy / dt;
