@@ -135,7 +135,7 @@
 					var vy = dy / dt;
 					var a = 0 ; //angle
 					touchCopy.speed = Math.sqrt(vx * vx + vy * vy);
-					var ma = (touchCopy.speed - oldTouch.speed)dt; //motion acceleration
+					var ma = (touchCopy.speed - oldTouch.speed) / dt; //motion acceleration
 					var ra = 0; //rotational acceleration
 					socket.emit("tuio 1.0", "/tuio/2Dobj set " + [self.id, touches[i].identifier, x, y, a, vx ,vy, ma, ra].join(' '));	
 				}
