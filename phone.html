@@ -33,6 +33,7 @@
 		</ul>
 	</div>
 	<script src="/socket.io/socket.io.js"></script>
+	<script src="/underscore/underscore.js"></script>
 	<script type="text/javascript">
 
 	var socket = io();
@@ -101,22 +102,24 @@
 				evt.preventDefault();
 			},
 			handleMove: function(evt){
+				// log("handleMove");
 				var touches = evt.changedTouches;
 				for (var i = 0 ; i < touches.length ; i++){
 					var index = ongoingTouchIndexById(touches[i].identifier);
-					ongoingTouches
+					// ongoingTouches
 				}
-				// socket.emit("tuio 1.0", )
+				socket.emit("tuio 1.0", 
+					"/tuio/2Dcur alive " + (_.map(ongoingTouches, 
+											function(t){return t.identifier;}).join(' ')));
 
-				// log("handleMove");
-				socket.emit("tuio 1.0", "handleMove");
+				// socket.emit("tuio 1.0", "handleMove");
 				evt.preventDefault();
 			},
 			handleEnd : function(evt){
+				// log("handleEnd");
 				var index = ongoingTouchIndexById(touches[i].identifier);
 				ongoingTouches.splice(index, 1); 
-				// log("handleEnd");
-				socket.emit("tuio 1.0", "handleEnd	");
+				// socket.emit("tuio 1.0", "handleEnd	");
 				evt.preventDefault();
 			},
 			// handleMotion : function(evt){
