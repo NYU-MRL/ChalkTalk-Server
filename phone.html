@@ -121,6 +121,7 @@
 			},
 			handleEnd : function(evt){
 				// log("handleEnd");
+				var touches = evt.changedTouches;
 				var index = self.ongoingTouchIndexById(touches[i].identifier);
 				self.ongoingTouches.splice(index, 1); 
 				// socket.emit("tuio 1.0", "handleEnd	");
