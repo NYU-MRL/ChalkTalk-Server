@@ -84,6 +84,8 @@
 
 			ongoingTouches: new Array(),
 
+			fseq_counter : 0,
+
 			getViewport: function(){
 				return {
 					w : Math.max(document.documentElement.clientWidth, window.innerWidth || 0),
@@ -131,10 +133,7 @@
 				// log("handleMove");
 				var touches = evt.changedTouches;
 				// See http://www.tuio.org/?tuio10
-				socket.emit("tuio 1.0", 
-					"/tuio/2Dobj alive " + (_.map(self.ongoingTouches, 
-											function(t){return t.identifier;}).join(' ')));
-
+				socket.emit("tuio 1.0", "/tuio/2Dobj source Multitouch@" + self.id );
 				var viewport = self.getViewport();
 				var now = (new Date()).getTime();
 
@@ -157,7 +156,13 @@
 					touchCopy.speed = Math.sqrt(vx * vx + vy * vy);
 					var ma = (touchCopy.speed - oldTouch.speed) / dt; //motion acceleration
 					var ra = 0; //rotational acceleration
-					socket.emit("tuio 1.0", "/tuio/2Dobj set " + [self.id, touches[i].identifier, x, y, a, vx ,vy, ma, ra].join(' '));	
+					socket.emit("tuio 1.0", "/tuio/2Dobj set " + [self.id, touches[i].identifier, x, y, a, vx ,vy, ma, ra].join(' '));
+					socket.emit("tuio 1.0", 
+					"/tuio/2Dobj alive " + (_.map(self.ongoingTouches, 
+											function(t){return t.identifier;}).join(' ')));
+
+					socket.emit("tuio 1.0", "/tuio/2Dobj fseq " + self.fseq_counter);
+					self.fseq_counter += 1;
 				}
 
 				
