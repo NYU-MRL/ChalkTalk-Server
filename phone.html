@@ -173,8 +173,8 @@
 					var removed = self.ongoingTouches.splice(index, 1)[0];
 					if (!removed.updated){
 						socket.emit('tap', {
-							x : removed.pageX/viewport.x, 
-							y : removed.pageY/viewport.y
+							x : removed.pageX/viewport.w, 
+							y : removed.pageY/viewport.h
 						} );
 					}
 				}
