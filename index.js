@@ -61,5 +61,7 @@ getShortID = (function(){
 	function func(longID){
 		return decode(longID) % prime;
 	}
+
+	return func;
 })();
 	
