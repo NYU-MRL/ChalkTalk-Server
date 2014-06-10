@@ -55,7 +55,7 @@ io.on('connection', function(client){
 		}
 	);
 
-	client.on("")	
+	// client.on("")	
 
 	client.on("disconnect",
 		function (){
