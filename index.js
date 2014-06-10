@@ -7,7 +7,7 @@ var inputNodes = [];
 var _DEBUG = true;
 
 var app_options = {
-	port: 80
+	port: 8080
 };
 
 ////////////////////////////SOCKET//////////////////////////
@@ -59,7 +59,7 @@ io.on('connection', function(client){
 
 	client.on("disconnect",
 		function (){
-			if (debug) {console.log("user disconnected");}
+			if (_DEBUG) {console.log("user disconnected");}
 		}
 		);
 });
