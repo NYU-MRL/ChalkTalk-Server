@@ -126,6 +126,7 @@
 			},
 
 			handleStart: function(evt){
+				if (self.send_touch) {socket.emit("touch", evt);}
 				// log("handleStart");
 				var touches = evt.changedTouches;
 				var now = (new Date()).getTime();
@@ -174,16 +175,17 @@
 						}
 					
 					if (self.send_touch){
-						socket.emit("touch", {
-							touches[i].identifier,
-							x:x, 
-							y:y,
-							vx : vx,
-							vy : vy,
-							fseq: fseq_counter,
-							alive : _.map(self.ongoingTouches, 
-							function(t){return t.identifier;}
-						})
+						socket.emit("touch", evt);
+						// socket.emit("touch", {
+						// 	touches[i].identifier,
+						// 	x:x, 
+						// 	y:y,
+						// 	vx : vx,
+						// 	vy : vy,
+						// 	fseq: fseq_counter,
+						// 	alive : _.map(self.ongoingTouches, 
+						// 	function(t){return t.identifier;}
+						// });
 					}
 
 					self.fseq_counter += 1;
@@ -193,6 +195,7 @@
 				evt.preventDefault();
 			},
 			handleEnd : function(evt){
+				if (self.send_touch) {socket.emit("touch", evt);}
 				// log("handleEnd");
 				var touches = evt.changedTouches;
 				var viewport = self.getViewport();

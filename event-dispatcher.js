@@ -4,7 +4,7 @@ Omer Shapira, http://omershapira.com
 MIT License
 */
 
-var ongoingTouches = [];
+var ongoingTouches = {};
 
 var attachEvents = function(socket, target){
 	socket.on("tap", handleTap);
@@ -22,7 +22,8 @@ var attachEvents = function(socket, target){
 	}
 
 	function handleTouch(msg){
-		var targetArray = touch_options.toMouse ? ongoingMice : ongoingTouches;
+		//Compare messages
+
 
 	}
 
