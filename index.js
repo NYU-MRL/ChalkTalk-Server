@@ -16,7 +16,7 @@ io.on('connection', function(client){
 
 	client.on('type', 
 		function(type){
-			console.log("user connected: " + type + " # " + client.id + ", short ID: "+ shortID);
+			console.log("user connected: " + type + " # " + client.id);
 			switch (type){
 				case 'touch': {
 					inputNodes.push(client);
