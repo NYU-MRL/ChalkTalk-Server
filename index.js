@@ -41,6 +41,14 @@ io.on('connection', function(client){
 		}
 	);	
 
+	client.on("touch",
+		function(msg){
+			if (_DEBUG){
+				console.log(JSON.stringify(msg));
+			}
+		}
+		);
+
 	client.on("tap", 
 		function (msg){
 			if (_DEBUG) {console.log("tap : " + JSON.stringify(msg));}
