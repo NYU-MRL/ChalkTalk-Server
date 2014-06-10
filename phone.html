@@ -38,8 +38,14 @@
 
 	var socket = io();
 
+	socket.on('connect',
+			function(){
+				socket.emit("type", "touch");
+			}
+		);
+
 	socket.on("set id", 
-		function (msg){ var events = new CanvasEvents({'id' : msg});}
+		function (msg){ var events = new CanvasEvents({'id' : msg, 'tap' : true, 'touch' : true});}
 		);
 
 	var CanvasEvents = function(options){
@@ -75,12 +81,13 @@
 
 			},
 
-			id : (function(x){
-					if (typeof x === undefined) {
-							return "0";
-						} else {
-							return x;
-						}})(options["id"]),
+			send_tuio : options.tuio || false,
+
+			send_tap : options.tap || false,
+
+			send_touch: options.touch || false,
+
+			id : options.id || 0,
 
 			ongoingTouches: new Array(),
 
@@ -156,16 +163,32 @@
 					touchCopy.speed = Math.sqrt(vx * vx + vy * vy);
 					var ma = (touchCopy.speed - oldTouch.speed) / dt; //motion acceleration
 					var ra = 0; //rotational acceleration
-					socket.emit("tuio 1.0", "/tuio/2Dobj set " + [self.id, touches[i].identifier, x, y, a, vx ,vy, ma, ra].join(' '));
-					socket.emit("tuio 1.0", 
-					"/tuio/2Dobj alive " + (_.map(self.ongoingTouches, 
-											function(t){return t.identifier;}).join(' ')));
 
-					socket.emit("tuio 1.0", "/tuio/2Dobj fseq " + self.fseq_counter);
+					if (self.send_tuio) {
+						socket.emit("tuio 1.0", "/tuio/2Dobj set " + [self.id, touches[i].identifier, x, y, a, vx ,vy, ma, ra].join(' '));
+						socket.emit("tuio 1.0", 
+							"/tuio/2Dobj alive " + (_.map(self.ongoingTouches, 
+							function(t){return t.identifier;}).join(' ')));
+					
+						socket.emit("tuio 1.0", "/tuio/2Dobj fseq " + self.fseq_counter);
+						}
+					
+					if (self.send_touch){
+						socket.emit("touch", {
+							touches[i].identifier,
+							x:x, 
+							y:y,
+							vx : vx,
+							vy : vy,
+							fseq: fseq_counter,
+							alive : _.map(self.ongoingTouches, 
+							function(t){return t.identifier;}
+						})
+					}
+
 					self.fseq_counter += 1;
 				}
 
-				
 
 				evt.preventDefault();
 			},
@@ -176,7 +199,7 @@
 				for (var i = 0 ; i < touches.length ; i++){
 					var index = self.ongoingTouchIndexById(touches[i].identifier);
 					var removed = self.ongoingTouches.splice(index, 1)[0];
-					if (!removed.updated){
+					if ((!removed.updated) && (self.send_tap)){
 						socket.emit('tap', {
 							x : removed.pageX/viewport.w, 
 							y : removed.pageY/viewport.h
