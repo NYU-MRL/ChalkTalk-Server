@@ -36,17 +36,7 @@
 	<script type='text/javascript' src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.6.0/underscore-min.js"></script>
 	<script type="text/javascript">
 
-	var socket = io();
-
-	socket.on('connect',
-			function(){
-				socket.emit("type", "touch");
-			}
-		);
-
-	socket.on("set id", 
-		function (msg){ var events = new CanvasEvents({'id' : msg, 'tap' : true, 'touch' : true});}
-		);
+	
 
 	var CanvasEvents = function(options){
 		var canvas = document.getElementsByTagName("canvas")[0];
@@ -217,7 +207,18 @@
 		};
 		self.init(canvas);
 	};
+	
+	var socket = io();
 
+	socket.on('connect',
+			function(){
+				socket.emit("type", "touch");
+			}
+		);
+
+	socket.on("set id", 
+		function (msg){ var events = new CanvasEvents({'id' : msg, 'tap' : true, 'touch' : true});}
+		);
 </script>
 </body>
 </html>
