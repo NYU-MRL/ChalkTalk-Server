@@ -200,14 +200,14 @@
 					}
 				}
 				evt.preventDefault();
-			},
+			}//,
 			// handleMotion : function(evt){
 			// 	log(JSON.stringify( evt.acceleration ));
 			// }
 		};
 		self.init(canvas);
 	};
-	
+
 	var socket = io();
 
 	socket.on('connect',
