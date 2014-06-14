@@ -27,6 +27,7 @@ io.on('connection', function(client){
 					break;
 				}
 			}
+			setID();
 		});
 
 	function setID(){
