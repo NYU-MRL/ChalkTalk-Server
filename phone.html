@@ -40,7 +40,7 @@
 
 	var CanvasEvents = function(options){
 		var canvas = document.getElementsByTagName("canvas")[0];
-		var ctx = canvas.getContext('2d');
+		var ctx = canv.getContext('2d');
 		ctx.globalAlpha = 0.01;
 
 		function log(message){
@@ -131,7 +131,9 @@
 				// log("handleMove");
 				var touches = evt.changedTouches;
 				// See http://www.tuio.org/?tuio10
-				socket.emit("tuio 1.0", "/tuio/2Dobj source Multitouch@" + self.id );
+				if (self.send_tuio){
+					socket.emit("tuio 1.0", "/tuio/2Dobj source Multitouch@" + self.id );
+				}
 				var viewport = self.getViewport();
 				var now = (new Date()).getTime();
 
