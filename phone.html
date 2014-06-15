@@ -40,7 +40,7 @@
 
 	var CanvasEvents = function(options){
 		var canvas = document.getElementsByTagName("canvas")[0];
-		var ctx = canvas.getContext('2d');
+		var ctx = `.getContext('2d');
 		ctx.globalAlpha = 0.01;
 
 		function log(message){
@@ -98,7 +98,7 @@
 						}
 					}
 				  return -1; 
-				},	
+			},	
 			
 			copyTouch: function (touch) { //Safari reuses old events. 
 				var verify = function(val, defaultVal){
@@ -116,7 +116,7 @@
 			},
 
 			handleStart: function(evt){
-				if (self.send_touch) {socket.emit("touch", evt);}
+				if (self.send_touch) {socket.emit("touch", copyTouch(evt));}
 				// log("handleStart");
 				var touches = evt.changedTouches;
 				var now = (new Date()).getTime();
@@ -165,7 +165,7 @@
 						}
 					
 					if (self.send_touch){
-						socket.emit("touch", evt);
+						socket.emit("touch", copyTouch(evt));
 						// socket.emit("touch", {
 						// 	touches[i].identifier,
 						// 	x:x, 
@@ -177,15 +177,14 @@
 						// 	function(t){return t.identifier;}
 						// });
 					}
-
 					self.fseq_counter += 1;
-				}
 
-
+					}
 				evt.preventDefault();
-			},
+				},
+
 			handleEnd : function(evt){
-				if (self.send_touch) {socket.emit("touch", evt);}
+				if (self.send_touch) {socket.emit("touch", copyTouch(evt));}
 				// log("handleEnd");
 				var touches = evt.changedTouches;
 				var viewport = self.getViewport();
