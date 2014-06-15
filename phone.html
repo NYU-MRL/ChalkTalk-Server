@@ -116,7 +116,7 @@
 			},
 
 			handleStart: function(evt){
-				if (self.send_touch) {socket.emit("touch", copyTouch(evt));}
+				if (self.send_touch) {socket.emit("touch", self.copyTouch(evt));}
 				// log("handleStart");
 				var touches = evt.changedTouches;
 				var now = (new Date()).getTime();
@@ -167,7 +167,7 @@
 						}
 					
 					if (self.send_touch){
-						socket.emit("touch", copyTouch(evt));
+						socket.emit("touch", self.copyTouch(evt));
 						// socket.emit("touch", {
 						// 	touches[i].identifier,
 						// 	x:x, 
