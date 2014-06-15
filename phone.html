@@ -40,7 +40,7 @@
 
 	var CanvasEvents = function(options){
 		var canvas = document.getElementsByTagName("canvas")[0];
-		var ctx = `.getContext('2d');
+		var ctx = canvas.getContext('2d');
 		ctx.globalAlpha = 0.01;
 
 		function log(message){
@@ -116,7 +116,7 @@
 			},
 
 			handleStart: function(evt){
-				if (self.send_touch) {socket.emit("touch", self.copyTouch(evt));}
+				if (self.send_touch) {socket.emit("touch", copyTouch(evt));}
 				// log("handleStart");
 				var touches = evt.changedTouches;
 				var now = (new Date()).getTime();
@@ -165,7 +165,7 @@
 						}
 					
 					if (self.send_touch){
-						socket.emit("touch", self.copyTouch(evt));
+						socket.emit("touch", copyTouch(evt));
 						// socket.emit("touch", {
 						// 	touches[i].identifier,
 						// 	x:x, 
