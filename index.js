@@ -47,12 +47,14 @@ io.on('connection', function(client){
 			if (_DEBUG){
 				console.log(JSON.stringify(msg));
 			}
+			broadcast(outputNodes, "touch", msg);
 		}
 		);
 
 	client.on("tap", 
 		function (msg){
 			if (_DEBUG) {console.log("tap : " + JSON.stringify(msg));}
+			broadcast(outputNodes, "tap", msg);
 		}
 	);
 
@@ -74,10 +76,15 @@ if ((process.argv.length > 2) && (typeof process.argv[2] === 'number')){
 app.get('/touch', function(req, res){
   res.sendfile('phone.html');
 });
-
+	
 app.get('/', function(req,res){
 	res.sendfile('main.html');
 });
+
+app.get('/event-dispatcher.js', function(req,res){
+	res.sendfile('event-dispatcher.js');
+});
+
 
 http.listen(app_options.port, function(){
   console.log('listening on *:' + app_options.port);

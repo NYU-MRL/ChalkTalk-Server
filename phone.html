@@ -36,30 +36,30 @@
 	<script type='text/javascript' src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.6.0/underscore-min.js"></script>
 	<script type="text/javascript">
 
-	
-
-	var CanvasEvents = function(options){
-		var canvas = document.getElementsByTagName("canvas")[0];
-		var ctx = canvas.getContext('2d');
-		ctx.globalAlpha = 0.01;
-
-		function log(message){
-			var messageList = document.getElementById("debugMessages");
-			var el = document.createElement("li");
-				el.innerText = message;
-				messageList.appendChild(el);
-		}
-
 		
 
-		var self = {
+		var CanvasEvents = function(options){
+			var canvas = document.getElementsByTagName("canvas")[0];
+			var ctx = canvas.getContext('2d');
+			ctx.globalAlpha = 0.01;
 
-			init: function(canvas){
-				canvas.addEventListener("touchstart", self.handleStart, false);
-				canvas.addEventListener("touchmove", self.handleMove, false);
+			function log(message){
+				var messageList = document.getElementById("debugMessages");
+				var el = document.createElement("li");
+				el.innerText = message;
+				messageList.appendChild(el);
+			}
+
+			
+
+			var self = {
+
+				init: function(canvas){
+					canvas.addEventListener("touchstart", self.handleStart, false);
+					canvas.addEventListener("touchmove", self.handleMove, false);
 				// canvas.addEventListener("touchcancel", self.handleCancel, false);
-			  	canvas.addEventListener("touchleave", self.handleEnd, false);
-			  	canvas.addEventListener("touchend", self.handleEnd, false);
+				canvas.addEventListener("touchleave", self.handleEnd, false);
+				canvas.addEventListener("touchend", self.handleEnd, false);
 
 			  	/////////////////ACCELEROMETER/////////////////
 
@@ -69,61 +69,73 @@
 			  	
 			  	socket.on("message", function(msg){log(msg);});
 
-			},
+			  },
 
-			send_tuio : options.tuio || false,
+			  send_tuio : options.tuio || false,
 
-			send_tap : options.tap || false,
+			  send_tap : options.tap || false,
 
-			send_touch: options.touch || false,
+			  send_touch: options.touch || false,
 
-			id : options.id || 0,
+			  id : options.id || 0,
 
-			ongoingTouches: new Array(),
+			  ongoingTouches: new Array(),
 
-			fseq_counter : 0,
+			  fseq_counter : 0,
 
-			getViewport: function(){
-				return {
-					w : Math.max(document.documentElement.clientWidth, window.innerWidth || 0),
-					h : Math.max(document.documentElement.clientHeight, window.innerHeight || 0)
-				}
-			},
+			  getViewport: function(){
+			  	return {
+			  		w : Math.max(document.documentElement.clientWidth, window.innerWidth || 0),
+			  		h : Math.max(document.documentElement.clientHeight, window.innerHeight || 0)
+			  	}
+			  },
 
-			ongoingTouchIndexById: function(idToFind) {
-				for (var i=0; i < self.ongoingTouches.length; i++) {
-					var id = self.ongoingTouches[i].identifier;
-					if (id == idToFind) {
-						return i;
-						}
-					}
-				  return -1; 
-			},	
-			
+			  ongoingTouchIndexById: function(idToFind) {
+			  	for (var i=0; i < self.ongoingTouches.length; i++) {
+			  		var id = self.ongoingTouches[i].identifier;
+			  		if (id == idToFind) {
+			  			return i;
+			  		}
+			  	}
+			  	return -1; 
+			  },	
+			  
 			copyTouch: function (touch) { //Safari reuses old events. 
 				var verify = function(val, defaultVal){
 					return typeof val !== 'undefined' ? val : defaultVal;
 				}
-			  return { 
-			  	identifier: touch.identifier, 
-			  	pageX: touch.pageX, 
-			  	pageY: touch.pageY, 
-			  	time : verify(touch.time, 0), 
-			  	speed :  verify(touch.speed, 0), 
-			  	rotation : verify(touch.rotation, 0),
-			  	updated : verify(touch.updated, false)
-			  	 };
+				return { 
+					identifier: touch.identifier, 
+					pageX: touch.pageX, 
+					pageY: touch.pageY, 
+					time : verify(touch.time, 0), 
+					speed :  verify(touch.speed, 0), 
+					rotation : verify(touch.rotation, 0),
+					updated : verify(touch.updated, false)
+				};
 			},
 
 			handleStart: function(evt){
-				if (self.send_touch) {socket.emit("touch", self.copyTouch(evt));}
+				
 				// log("handleStart");
 				var touches = evt.changedTouches;
 				var now = (new Date()).getTime();
+				var viewport = self.getViewport();
 				for (var i = 0 ; i < touches.length ; i++){
 					var touchCopy = self.copyTouch(touches[i]);
 					touchCopy.time = now;
 					self.ongoingTouches.push(touchCopy);
+					if (self.send_touch) {
+						var id = touches[i].identifier;
+						var x = touches[i].pageX / viewport.w;
+						var y = touches[i].pageY / viewport.h;
+						socket.emit("touch", {
+							eventType : "touchStart",
+							id : id,
+							x : x,
+							y : y
+						});
+					}
 				}
 				evt.preventDefault();
 			},
@@ -161,46 +173,53 @@
 						socket.emit("tuio 1.0", "/tuio/2Dobj set " + [self.id, touches[i].identifier, x, y, a, vx ,vy, ma, ra].join(' '));
 						socket.emit("tuio 1.0", 
 							"/tuio/2Dobj alive " + (_.map(self.ongoingTouches, 
-							function(t){return t.identifier;}).join(' ')));
-					
+								function(t){return t.identifier;}).join(' ')));
+						
 						socket.emit("tuio 1.0", "/tuio/2Dobj fseq " + self.fseq_counter);
-						}
+					}
 					
 					if (self.send_touch){
-						socket.emit("touch", self.copyTouch(evt));
-						// socket.emit("touch", {
-						// 	touches[i].identifier,
-						// 	x:x, 
-						// 	y:y,
-						// 	vx : vx,
-						// 	vy : vy,
-						// 	fseq: fseq_counter,
-						// 	alive : _.map(self.ongoingTouches, 
-						// 	function(t){return t.identifier;}
-						// });
+						// socket.emit("touch", self.copyTouch(evt));
+						socket.emit("touch", {
+							eventType : "touchMove",
+							id:touches[i].identifier,
+							x:x, 
+							y:y,
+							vx : vx,
+							vy : vy,
+							fseq: self.fseq_counter
+							// alive : _.map(self.ongoingTouches, 
+							// function(t){return t.identifier;})
+					});
 					}
 					self.fseq_counter += 1;
 
-					}
+				}
 				evt.preventDefault();
-				},
+			},
 
 			handleEnd : function(evt){
-				if (self.send_touch) {socket.emit("touch", self.copyTouch(evt));}
+				
 				// log("handleEnd");
 				var touches = evt.changedTouches;
 				var viewport = self.getViewport();
 				for (var i = 0 ; i < touches.length ; i++){
 					var index = self.ongoingTouchIndexById(touches[i].identifier);
 					var removed = self.ongoingTouches.splice(index, 1)[0];
-					if ((!removed.updated) && (self.send_tap)){
-						socket.emit('tap', {
-							x : removed.pageX/viewport.w, 
-							y : removed.pageY/viewport.h
-						} );
+					if (self.send_touch) {socket.emit("touch", {
+						id : removed.identifier,
+						eventType : "touchEnd",
+						x : removed.pageX/viewport.w, 
+						y : removed.pageY/viewport.h
+					});}
+						if ((!removed.updated) && (self.send_tap)){
+							socket.emit('tap', {
+								x : removed.pageX/viewport.w, 
+								y : removed.pageY/viewport.h
+							} );
+						}
 					}
-				}
-				evt.preventDefault();
+					evt.preventDefault();
 			}//,
 			// handleMotion : function(evt){
 			// 	log(JSON.stringify( evt.acceleration ));
@@ -212,9 +231,9 @@
 	var socket = io();
 
 	socket.on('connect',
-			function(){
-				socket.emit("type", "touch");
-			}
+		function(){
+			socket.emit("type", "touch");
+		}
 		);
 
 	socket.on("set id", 

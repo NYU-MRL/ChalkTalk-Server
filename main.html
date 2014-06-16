@@ -4,18 +4,23 @@
 	<title>Chalktalk test</title>
 </head>
 <body>
-
+<div id='hi'></div>
 <script src="/socket.io/socket.io.js"></script>
 <script type='text/javascript' src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.6.0/underscore-min.js"></script>
-<script src="tuio-cursor.js"> </script>
+<script src="/event-dispatcher.js"> </script>
 <script type="text/javascript">
 	var socket = io();
 
-	socket.on("set id"){
+	socket.on("connect", 
 		function (msg) {
-			//TODO: fill this
-		}
-	}
+			socket.emit('type','display');
+			attachEvents(socket, document.getElementById("hi"));
+			document.getElementById("hi").onclick = function(x){
+				console.log("x : " + x.clientX + "y : " + x.clientY );
+			};
+	});
+
+
 
 </script>
 </body>
