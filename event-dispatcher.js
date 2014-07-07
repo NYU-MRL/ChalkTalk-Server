@@ -6,6 +6,8 @@ MIT License
 
 var ongoingTouches = {};
 
+var forceMouseEvents = false;
+
 var attachEvents = function(socket, target){
 	socket.on("tap", handleTap);
 	socket.on("tuio 1.0", handleTuio);
@@ -28,15 +30,26 @@ var attachEvents = function(socket, target){
 	function handleTouch(msg){
 		//Compare messages
 		switch (msg.eventType){
-			case "touchBegin":{
+			case "touchStart":{
+				ongoingTouches.push(copyEvent(msg));
+				var evt = new TouchEvent("touchstart")
 				break;
 			}
 			case "touchMove":{
+				var i = findEventIndexById(msg);
+				if (i >= 0) {
+					ongoingTouches.splice(i,1,copyEvent(msg));
+				}
 				break;
 			}
 			case "touchEnd":{
+				var i = findEventIndexById(msg);
+				if (i >= 0) {
+					ongoingTouches.splice(i,1);
+				}
 				break;
 			}
+			default : break;
 		}
 
 	}
@@ -45,6 +58,23 @@ var attachEvents = function(socket, target){
 
 	function handleTuio(msg){
 		//TODO: Implement
+	}
+
+	function findEventIndexById(evt){
+		for (var i = 0 ; i < ongoingTouches.length; i++){
+			if (ongoingTouches[i].id === evt.id){
+				return i;
+			}
+		}
+		return -1;
+	}
+
+	function copyEvent(evt){
+		var newEvt = {};
+		['eventType', 'id', 'x', 'y'].foreach(
+			function(x){ newEvt[x] = evt[x]; }
+			);
+		return newEvt;
 	}
 
 	function getViewport(){
