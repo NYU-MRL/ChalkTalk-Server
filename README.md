@@ -16,3 +16,5 @@ into [No-IP](http://www.no-ip.org).
 ## Running
 Have node and npm installed and run`npm install` to fetch dependencies. 
 To run, input `node index.js` followed by a port number. By default, the server will run on port 8080.
+
+Once the server is running, you can acess it by going to `/phone.html` if you're a handheld device or `/index.html` if you're just a display.
