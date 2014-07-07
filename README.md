@@ -14,4 +14,5 @@ The server accepts WebSocket connections from any device with a browser, sending
 into [No-IP](http://www.no-ip.org).
 
 ## Running
-Have node installed and run `node index.js` followed by a port number. By default, the server will run on port 8080.
+Have node and npm installed and run`npm install` to fetch dependencies. 
+To run, input `node index.js` followed by a port number. By default, the server will run on port 8080.
